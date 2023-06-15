@@ -1,8 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export const Edittask = (props) => {
-  const [edit, setEdit] = useState(false);
+  const [edit, setEdit] = useState(() => {
+    const storedData = localStorage.getItem(`editState-${props.task.id}`);
+    return storedData ? JSON.parse(storedData) : false;
+  });
   const [editedTask, setEditedTask] = useState(props.task.taskName);
+
+  useEffect(() => {
+    localStorage.setItem(`editState-${props.task.id}`, JSON.stringify(edit));
+  }, [edit, props.task.id]);
+
+  useEffect(() => {
+    setEditedTask(props.task.taskName);
+  }, [props.task.taskName]);
 
   const handleInputChange = (e) => {
     setEditedTask(e.target.value);

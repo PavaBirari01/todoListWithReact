@@ -1,26 +1,56 @@
-// App.js
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Addtask } from "./components/Addtask";
 import { Tasklist } from "./components/Tasklist";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
-  const notify = () =>
+  const notifyErr = () =>
     toast.error("Please fill valid value", {
       position: "top-right",
-      autoClose: 1000,
+      autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "colored",
+      className: "toast-success",
     });
 
-  const [todoList, setTodoList] = useState([]);
+  const notifySuccess = () =>
+    toast.success("Task added successfully.", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      className: "toast-success",
+    });
+
+  const notifyWarning = () =>
+    toast.warning("Task Removed successfully.", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      className: "toast-success",
+    });
+
+  const [todoList, setTodoList] = useState(() => {
+    const storedData = localStorage.getItem("todoList");
+    return storedData ? JSON.parse(storedData) : [];
+  });
+
   const [newTodo, setNewTodo] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("todoList", JSON.stringify(todoList));
+  }, [todoList]);
 
   const onChangeHandler = (e) => {
     setNewTodo(e.target.value);
@@ -28,13 +58,13 @@ const App = () => {
 
   const handleAdd = (newTodo) => {
     if (newTodo.trim() === "") {
-      notify();
+      notifyErr();
     } else {
       const list = {
         id: todoList.length === 0 ? 1 : todoList[todoList.length - 1].id + 1,
         taskName: newTodo,
       };
-
+      notifySuccess();
       setTodoList([...todoList, list]);
       setNewTodo("");
     }
@@ -43,6 +73,7 @@ const App = () => {
   const deleteTask = (id) => {
     const updatedList = todoList.filter((task) => task.id !== id);
     setTodoList(updatedList);
+    notifyWarning();
   };
 
   const editHandler = (updatedTask) => {
@@ -55,7 +86,6 @@ const App = () => {
       }
       return task;
     });
-
     setTodoList(updatedList);
   };
 
@@ -81,4 +111,5 @@ const App = () => {
     </>
   );
 };
+
 export default App;

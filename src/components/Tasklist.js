@@ -1,13 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Edittask } from "./Edittask";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Tasklist = (props) => {
-  const [complete, setComplete] = useState(false);
-  const [editing, setEditing] = useState(false);
+  const [complete, setComplete] = useState(() => {
+    const storedData = localStorage.getItem(`completeState-${props.task.id}`);
+    return storedData ? JSON.parse(storedData) : false;
+  });
+
+  const [editing, setEditing] = useState(() => {
+    const storedData = localStorage.getItem(`editingState-${props.task.id}`);
+    return storedData ? JSON.parse(storedData) : false;
+  });
+
   const [editedTask, setEditedTask] = useState(props.task.taskName);
+
+  useEffect(() => {
+    localStorage.setItem(
+      `completeState-${props.task.id}`,
+      JSON.stringify(complete)
+    );
+    localStorage.setItem(
+      `editingState-${props.task.id}`,
+      JSON.stringify(editing)
+    );
+  }, [complete, editing, props.task.id]);
 
   const handleComplete = () => {
     setComplete(true);
+    notify("Task completed successfully");
   };
 
   const handleUpdateClick = () => {
@@ -16,6 +38,34 @@ export const Tasklist = (props) => {
       taskName: editedTask,
     });
     setEditing(false);
+    notify("Task updated successfully");
+  };
+  const notifyAreadyCompleted = () => {
+    notify1("Task already done!");
+  };
+  const notify = (message) => {
+    toast.success(message, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      className: "toast-success",
+    });
+  };
+  const notify1 = (message) => {
+    toast.info(message, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      className: "toast-success",
+    });
   };
 
   return (
@@ -36,8 +86,7 @@ export const Tasklist = (props) => {
           )}
 
           {complete ? (
-            <button>DONE</button>
-          ) : (
+            <button onClick={notifyAreadyCompleted}>DONE</button>          ) : (
             <>
               {!editing && (
                 <>
