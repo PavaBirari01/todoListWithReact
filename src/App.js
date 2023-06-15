@@ -1,3 +1,4 @@
+// App.js
 import React from "react";
 import { useState } from "react";
 import { Addtask } from "./components/Addtask";
@@ -5,7 +6,7 @@ import { Tasklist } from "./components/Tasklist";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const App = () => {
+const App = () => {
   const notify = () =>
     toast.error("Please fill valid value", {
       position: "top-right",
@@ -16,17 +17,17 @@ export const App = () => {
       draggable: true,
       progress: undefined,
       theme: "colored",
-      // transition: "slide",
     });
+
   const [todoList, setTodoList] = useState([]);
   const [newTodo, setNewTodo] = useState("");
 
   const onChangeHandler = (e) => {
     setNewTodo(e.target.value);
   };
+
   const handleAdd = (newTodo) => {
     if (newTodo.trim() === "") {
-      // alert("please fill");
       notify();
     } else {
       const list = {
@@ -38,22 +39,29 @@ export const App = () => {
       setNewTodo("");
     }
   };
+
   const deleteTask = (id) => {
-    const updatedList = todoList.filter((task) => {
-      if (task.id === id) {
-        return false;
-      } else {
-        return true;
-      }
-    });
+    const updatedList = todoList.filter((task) => task.id !== id);
     setTodoList(updatedList);
   };
+
+  const editHandler = (updatedTask) => {
+    const updatedList = todoList.map((task) => {
+      if (task.id === updatedTask.id) {
+        return {
+          ...task,
+          taskName: updatedTask.taskName,
+        };
+      }
+      return task;
+    });
+
+    setTodoList(updatedList);
+  };
+
   return (
     <>
       <h1>To do list</h1>
-      {/* <input value={newTodo} onChange={onChangeHandler} />
-      <button onClick={() => handleAdd(newTodo)}>Add Task</button> */}
-
       <Addtask
         onChangeHandler={onChangeHandler}
         handleAdd={handleAdd}
@@ -61,23 +69,12 @@ export const App = () => {
       />
       <ToastContainer />
       <div>
-        {/* {todoList.map((task) => {
-          {
-             return (
-            <ul>
-              <li>
-                {task.taskName}
-                <button onClick={() => deleteTask(task.id)}>RemoveS</button>
-              </li>
-            </ul>
-          ); 
-          }
-        })} */}
         {todoList.map((task) => (
           <Tasklist
-            id={task.id}
-            taskName={task.taskName}
+            key={task.id}
+            task={task}
             deleteTask={deleteTask}
+            editHandler={editHandler}
           />
         ))}
       </div>
