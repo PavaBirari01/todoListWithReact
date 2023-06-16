@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Edittask } from "./Edittask";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import "../App.css";
 export const Tasklist = (props) => {
   const [complete, setComplete] = useState(() => {
     const storedData = localStorage.getItem(`completeState-${props.task.id}`);
@@ -71,7 +71,7 @@ export const Tasklist = (props) => {
   return (
     <>
       <ul>
-        <li>
+        <li className="taskListContainer">
           {editing ? (
             <>
               <input
@@ -79,25 +79,42 @@ export const Tasklist = (props) => {
                 value={editedTask}
                 onChange={(e) => setEditedTask(e.target.value)}
               />
-              <button onClick={handleUpdateClick}>Update</button>
+              <button onClick={handleUpdateClick}>
+                <i class="fa fa-save"></i>
+                Update
+              </button>
             </>
           ) : (
-            <span>{props.task.taskName}</span>
+            <div className="taskName">{props.task.taskName}</div>
           )}
 
           {complete ? (
-            <button onClick={notifyAreadyCompleted}>DONE</button>          ) : (
+            <div className="buttonsContainer">
+              <button onClick={notifyAreadyCompleted}>
+                <i class="fa fa-check">Done</i>
+              </button>
+            </div>
+          ) : (
             <>
               {!editing && (
                 <>
-                  <button onClick={() => setEditing(true)}>Edit</button>
-                  <button onClick={handleComplete}>Completed</button>
+                  <div className="buttonsContainer">
+                    <button onClick={() => setEditing(true)}>
+                      <i class="fa fa-pencil">Edit</i>
+                    </button>
+                    <button onClick={handleComplete}>
+                      <i class="fa fa-check-circle">Completed</i>
+                    </button>
+                  </div>
                 </>
               )}
             </>
           )}
-          <button onClick={() => props.deleteTask(props.task.id)}>
-            Remove
+          <button
+            onClick={() => props.deleteTask(props.task.id)}
+            className=""
+          >
+            <i class="fa fa-trash"> Remove</i>
           </button>
         </li>
       </ul>

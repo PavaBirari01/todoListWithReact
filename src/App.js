@@ -74,6 +74,10 @@ const App = () => {
     const updatedList = todoList.filter((task) => task.id !== id);
     setTodoList(updatedList);
     notifyWarning();
+  
+    // Remove task from local storage
+    localStorage.removeItem(`completeState-${id}`);
+    localStorage.removeItem(`editingState-${id}`);
   };
 
   const editHandler = (updatedTask) => {

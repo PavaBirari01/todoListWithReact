@@ -36,10 +36,10 @@ export const Edittask = (props) => {
       {edit ? (
         <>
           <input type="text" value={editedTask} onChange={handleInputChange} />
-          <button onClick={handleUpdateClick}>Update</button>
+          <button onClick={handleUpdateClick}><i class="fa fa-save">Update</i></button>
         </>
       ) : (
-        <button onClick={handleEditClick}>Edit</button>
+        <button onClick={handleEditClick}><i class="fa fa-pencil">Edit</i></button>
       )}
     </>
   );
